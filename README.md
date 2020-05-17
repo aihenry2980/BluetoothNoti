@@ -1,2 +1,4 @@
 # BluetoothNoti
-show noti for my sony headphone
+show notification for my sony headphones when they are connected via bluetooth
+
+
