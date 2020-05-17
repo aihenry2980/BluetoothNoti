@@ -1,12 +1,19 @@
 package com.example.bluetoothnoti
 
+//import android.R
+
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-
+import android.widget.ArrayAdapter
+import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
+import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothHeadset
+import android.bluetooth.BluetoothProfile
+import android.content.Context
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -19,6 +26,35 @@ class MainActivity : AppCompatActivity() {
 			Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 					.setAction("Action", null).show()
 		}
+
+
+		var bluetoothHeadset: BluetoothHeadset? = null
+
+// Get the default adapter
+		val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
+
+		private val profileListener = object : BluetoothProfile.ServiceListener {
+
+			override fun onServiceConnected(profile: Int, proxy: BluetoothProfile) {
+				if (profile == BluetoothProfile.HEADSET) {
+					bluetoothHeadset = proxy as BluetoothHeadset
+				}
+			}
+
+			override fun onServiceDisconnected(profile: Int) {
+				if (profile == BluetoothProfile.HEADSET) {
+					bluetoothHeadset = null
+				}
+			}
+		}
+
+// Establish connection to the proxy.
+		bluetoothAdapter?.getProfileProxy(context, profileListener, BluetoothProfile.HEADSET)
+
+// ... call functions on bluetoothHeadset
+
+// Close proxy connection after use.
+		bluetoothAdapter?.closeProfileProxy(BluetoothProfile.HEADSET, bluetoothHeadset)
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu): Boolean {
